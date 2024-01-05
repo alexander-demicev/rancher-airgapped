@@ -1,0 +1,67 @@
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: CoreProvider
+metadata:
+  name: cluster-api
+  namespace: capi-system
+spec:
+  additionalManifests:
+    name: capi-additional-rbac-roles
+    namespace: rancher-turtles-system
+  configSecret:
+    name: variables
+    namespace: rancher-turtles-system
+  fetchConfig:
+    selector:
+      matchLabels:
+        "provider.cluster.x-k8s.io/name": "cluster-api"
+        "provider.cluster.x-k8s.io/type": "core"
+  version: v1.4.6
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: BootstrapProvider
+metadata:
+  name: kubeadm
+  namespace: kubeadm-bootstrap-system
+spec:
+  configSecret:
+    name: variables
+    namespace: rancher-turtles-system
+  fetchConfig:
+    selector:
+      matchLabels:
+        "provider.cluster.x-k8s.io/name": "kubeadm"
+        "provider.cluster.x-k8s.io/type": "bootstrap"
+  version: v1.4.6
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: ControlPlaneProvider
+metadata:
+  name: kubeadm
+  namespace: kubeadm-control-plane-system
+spec:
+  configSecret:
+    name: variables
+    namespace: rancher-turtles-system
+  fetchConfig:
+    selector:
+      matchLabels:
+        "provider.cluster.x-k8s.io/name": "controlplane"
+        "provider.cluster.x-k8s.io/type": "kubeadm"
+  version: v1.4.6
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: InfrastructureProvider
+metadata:
+  name: vsphere
+  namespace: capv-system
+spec:
+  configSecret:
+    name: variables
+    namespace: rancher-turtles-system
+  fetchConfig:
+    selector:
+      matchLabels:
+        "provider.cluster.x-k8s.io/name": "infrastructure"
+        "provider.cluster.x-k8s.io/type": "vsphere"
+  version: v1.8.5
