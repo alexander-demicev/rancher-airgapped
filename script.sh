@@ -1,4 +1,3 @@
-chmod +x rancher-save-images.sh
 ./rancher-save-images.sh --image-list ./rancher-images.txt
 
 cat > kind-cluster-with-extramounts.yaml <<EOF
@@ -49,19 +48,11 @@ helm install rancher rancher-stable/rancher \
   
 helm install rancher-turtles oci://ghcr.io/rancher-sandbox/rancher-turtles-chart/rancher-turtles \
   --version 0.0.0-3461d67685276596682740624123ff5383648cf5 -n rancher-turtles-system --create-namespace \
-  --set rancherTurtles.image=docker.io/ademicev/rancher-turtles-arm64 \
-  --set rancherTurtles.imageVersion=v0.0.1 \
   --set cluster-api-operator.cert-manager.enabled=false \
   --set cluster-api-operator.cluster-api.enabled=false \
-  --set cluster-api-operator.image.manager.repository=docker.io/ademicev/cluster-api-operator-arm64 \
-  --set cluster-api-operator.image.manager.tag=v0.0.1 \
   --set=rancherTurtles.features.embedded-capi.disabled=false \
   --dependency-update --wait --timeout 180s
 
-kubectl create -f capi-variables.yaml
-kubectl create -f capi-additional-manifests.yaml
-kubectl create -f capi-core-cm.yaml
-kubectl create -f capi-bootstrap-kubeadm.yaml
-kubectl create -f capi-control-plane-kubeadm.yaml
+kubectl create -f manifests/
 
 kubectl create -f capi-providers.yaml
