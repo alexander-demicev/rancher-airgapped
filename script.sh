@@ -48,7 +48,7 @@ helm install rancher rancher-stable/rancher \
 --version v2.7.9
   
 helm install rancher-turtles oci://ghcr.io/rancher-sandbox/rancher-turtles-chart/rancher-turtles \
-  --version 0.0.0-b31270ba57785a43906e5dfafa9d6979f599a582 -n rancher-turtles-system --create-namespace \
+  --version 0.0.0-3461d67685276596682740624123ff5383648cf5 -n rancher-turtles-system --create-namespace \
   --set rancherTurtles.image=docker.io/ademicev/rancher-turtles-arm64 \
   --set rancherTurtles.imageVersion=v0.0.1 \
   --set cluster-api-operator.cert-manager.enabled=false \

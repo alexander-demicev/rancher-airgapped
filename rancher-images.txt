@@ -706,3 +706,4 @@ registry.k8s.io/cluster-api/cluster-api-controller:v1.4.6
 registry.k8s.io/cluster-api/kubeadm-bootstrap-controller:v1.4.6
 registry.k8s.io/cluster-api/kubeadm-control-plane-controller:v1.4.6
 registry.k8s.io/ingress-nginx/controller:v1.9.5@sha256:b3aba22b1da80e7acfc52b115cae1d4c687172cbf2b742d5b502419c25ff340e
+ghcr.io/rancher-sandbox/rancher-turtles:v0.0.0-3461d67685276596682740624123ff5383648cf5
