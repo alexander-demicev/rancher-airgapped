@@ -35,4 +35,5 @@ helm install rancher-turtles ./charts/rancher-turtles-0.0.0-3461d676852765966827
 
 kubectl create -f manifests/
 
+kubectl create -f capi-variables.yaml # Add vsphere username and password here before proceeding, and other required credential variables
 kubectl create -f capi-providers.yaml
