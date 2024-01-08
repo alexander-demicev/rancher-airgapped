@@ -1,17 +1,17 @@
 kind create cluster --config kind-cluster-with-extramounts.yaml
 
+# Login to GHCR before running this part
+while IFS= read -r line; do
+    docker pull "$line"
+    kind load docker-image "$line" --name=capi-test
+done < "rancher-images.txt"
+
 helm install cert-manager ./charts/cert-manager-v1.12.3.tgz \
     --namespace cert-manager \
     --create-namespace \
     --version v1.12.3 \
     --set installCRDs=true \
     --wait
-
-# Login to GHCR before running this part
-while IFS= read -r line; do
-    docker pull "$line"
-    kind load docker-image "$line" --name=capi-test
-done < "rancher-images.txt"
 
 kubectl apply -f nginx.yaml
     
