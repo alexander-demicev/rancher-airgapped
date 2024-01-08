@@ -1,42 +1,21 @@
-./rancher-save-images.sh --image-list ./rancher-images.txt
-
-cat > kind-cluster-with-extramounts.yaml <<EOF
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-name: capi-test
-nodes:
-- role: control-plane
-  image: kindest/node:v1.26.6
-  extraMounts:
-    - hostPath: /var/run/docker.sock
-      containerPath: /var/run/docker.sock
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
-  extraPortMappings:
-  - containerPort: 80
-    hostPort: 80
-    protocol: TCP
-  - containerPort: 443
-    hostPort: 443
-    protocol: TCP
-EOF
-
 kind create cluster --config kind-cluster-with-extramounts.yaml
 
-helm install cert-manager jetstack/cert-manager \
+helm install cert-manager ./charts/cert-manager-v1.12.3.tgz \
     --namespace cert-manager \
     --create-namespace \
     --version v1.12.3 \
     --set installCRDs=true \
     --wait
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+# Login to GHCR before running this part
+while IFS= read -r line; do
+    docker pull "$line"
+    kind load docker-image "$line" --name=capi-test
+done < "rancher-images.txt"
+
+kubectl apply -f nginx.yaml
     
-helm install rancher rancher-stable/rancher \
+helm install rancher ./charts/rancher-2.7.9.tgz \
 --namespace cattle-system \
 --create-namespace \
 --set replicas=1 \
@@ -44,9 +23,10 @@ helm install rancher rancher-stable/rancher \
 --set global.cattle.psp.enabled=false \
 --set 'extraEnv[0].name=CATTLE_FEATURES' \
 --set 'extraEnv[0].value=embedded-cluster-api=false' \
+--set useBundledSystemChart=true \
 --version v2.7.9
   
-helm install rancher-turtles oci://ghcr.io/rancher-sandbox/rancher-turtles-chart/rancher-turtles \
+helm install rancher-turtles ./charts/rancher-turtles-0.0.0-3461d67685276596682740624123ff5383648cf5.tgz \
   --version 0.0.0-3461d67685276596682740624123ff5383648cf5 -n rancher-turtles-system --create-namespace \
   --set cluster-api-operator.cert-manager.enabled=false \
   --set cluster-api-operator.cluster-api.enabled=false \
