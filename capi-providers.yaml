@@ -51,6 +51,38 @@ spec:
   version: v1.4.6
 ---
 apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: BootstrapProvider
+metadata:
+  name: rke2
+  namespace: rke2-bootstrap-system
+spec:
+  configSecret:
+    name: variables
+    namespace: rancher-turtles-system
+  fetchConfig:
+    selector:
+      matchLabels:
+        "provider.cluster.x-k8s.io/name": "rke2"
+        "provider.cluster.x-k8s.io/type": "bootstrap"
+  version: v0.2.2
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: ControlPlaneProvider
+metadata:
+  name: rke2
+  namespace: rke2-control-plane-system
+spec:
+  configSecret:
+    name: variables
+    namespace: rancher-turtles-system
+  fetchConfig:
+    selector:
+      matchLabels:
+        "provider.cluster.x-k8s.io/name": "controlplane"
+        "provider.cluster.x-k8s.io/type": "rke2"
+  version: v0.2.2
+---
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
 kind: InfrastructureProvider
 metadata:
   name: vsphere
